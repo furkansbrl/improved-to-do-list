@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--! TalwindCss CDN Added  -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>To Do List</title>
+    <style>
+      body{
+        background: white
+      }
+
+      input[type="text"]:focus{
+        outline: none;
+        border-color: #9ecaed;
+        box-shadow: 0 0 10px #9ecaed;
+      }
+      
+      ul{
+        
+        border: 1px solid gray;
+      }
+
+      li button{
+        transition: .4s color;
+        
+      }
+
+      li button:hover{
+        color: red;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="text-5xl my-10 text-center">To Do List</h1>
+    <div class="container mx-auto w-1/2">
+      <form>
+        <div class="border flex">
+          <input
+            type="text"
+            placeholder="Görev Ekleyin"
+            class="w-full p-3 relative z-90"
+            id="todo-input"
+          />
+          <button
+            type="submit"
+            class="border-l px-6 bg-green-500 text-white"
+            id="add-todo"
+          >
+            Ekle
+          </button>
+        </div>
+      </form>
+
+      <div class="flex justify-end my-5">
+        <button class="p-3 bg-red-500 text-white" onclick="clearTodos()">Temizle</button>
+      </div>
+
+      <ul class="border p-6 flex flex-col gap-y-4" id="todos">
+        <!-- <li
+          class="flex justify-between border px-4 py-3 flex items-center justify-between"
+        >
+          <span>Todo Name</span>
+          <button class="text-red-400">Sil</button>
+        </li> -->
+      </ul>
+    </div>
+
+    <script>
+      const textInputDOM = document.getElementById("todo-input");
+      const btnAddTodoDOM = document.querySelector("#add-todo");
+      const todosDOM = document.querySelector("#todos");
+
+      let textInputValue = "";
+      let todos = [];
+
+
+    // DOMs
+      textInputDOM.addEventListener("input", function (event) {
+        textInputValue = event.target.value;
+      });
+
+      btnAddTodoDOM.addEventListener("click", addTodo);
+
+
+    // Add Funciton
+      function addTodo(e) {
+        e.preventDefault(); // disable page refresh function
+
+        if(textInputValue.trim() == "" || textInputValue == null){
+          alert("Bir Görev Belirlemediniz !")
+        }
+        else
+        {
+          todos.unshift({ id: todos.length + 1, todoTitle: textInputValue });
+        textInputDOM.value = "";  // clear inside input
+        textInputValue = "";      // Clear input value variable
+        displayTodos();
+      
+        }
+        
+      }
+
+    // Display function
+      function displayTodos() {
+        let result = "";
+
+        if(todos.length === 0){
+            todosDOM.innerHTML = "Liste Boş!"    
+        }else{
+            todos.forEach((item) => {
+          result += `
+            <li class="flex justify-between border px-4 py-3 flex items-center justify-between">
+                <span> ${item.todoTitle} </span>
+                <button class="text-red-400" onclick="deleteTodo(${item.id})">Sil</button>
+            </li>
+            `; 
+        });
+
+        todosDOM.innerHTML = result;
+        }
+
+      }
+
+    
+    // Delete Function
+      function deleteTodo(id){
+        let deletedId;
+
+        for(let index in todos){
+            if(todos[index].id == id) {
+                deletedId = index;
+            }
+        }
+
+        todos.splice(deletedId, 1);
+        displayTodos();
+      }
+
+      
+      // Function To Clear All Tasks
+      function clearTodos(){
+        todos.splice(0, todos.length);
+        displayTodos();     // Show Current Status
+      }
+
+      
+      displayTodos();   // Call The Function First Load
+    </script>
+  </body>
+</html>
